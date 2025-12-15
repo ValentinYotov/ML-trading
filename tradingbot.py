@@ -3,10 +3,14 @@ from lumibot.backtesting import YahooDataBacktesting
 from lumibot.strategies.strategy import Strategy
 from lumibot.traders import Trader
 from datetime import datetime
+import os
+from dotenv import load_dotenv
 
-API_KEY = 'PKV63ME5K6QNENAE6CW2KVKYXG'
-API_SECRET = '5EqiTyTyfceKdjpsKLjMmH7XL5ME5N4wN8jJwfYnTKd4'
-BASE_URL ='https://paper-api.alpaca.markets/v2'
+load_dotenv()
+
+API_KEY = os.getenv('API_KEY')
+API_SECRET = os.getenv('API_SECRET')
+BASE_URL = os.getenv('BASE_URL')
 
 ALPACA_CREDS = {
     'API_KEY': API_KEY,
