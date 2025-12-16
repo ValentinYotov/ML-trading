@@ -1,3 +1,13 @@
+import glob
+def clear_logs():
+    log_files = glob.glob("logs/*")
+    for f in log_files:
+        try:
+            os.remove(f)
+        except Exception as e:
+            print(f"Неуспешно изтриване на {f}: {e}")
+
+clear_logs()
 from lumibot.brokers.alpaca import Alpaca
 from lumibot.backtesting import YahooDataBacktesting
 from lumibot.strategies.strategy import Strategy
@@ -40,7 +50,7 @@ class MLTrader(Strategy):
         three_days_prior = today - timedelta(days=3)
         return today.strftime('%Y-%m-%d'), three_days_prior.strftime('%Y-%m-%d')
     
-    def get_news(self):
+    def get_sentiment(self):
         today, three_days_prior = self.get_dates()
         news = self.api.get_news(symbol=self.symbol, start=three_days_prior, end=today)
         headlines = []
