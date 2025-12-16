@@ -1,3 +1,4 @@
+import os
 import glob
 def clear_logs():
     log_files = glob.glob("logs/*")
