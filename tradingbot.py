@@ -42,10 +42,18 @@ class MLTrader(Strategy):
     
     def get_news(self):
         today, three_days_prior = self.get_dates()
-        news = self.api.get_news(symbol = self.symbol, start =three_days_prior, end = today)
-
-        news = [ev.__dict__['raw']['headline'] for ev in news]
-        return news
+        news = self.api.get_news(symbol=self.symbol, start=three_days_prior, end=today)
+        headlines = []
+        for ev in news:
+            # Debug: виж структурата на обекта
+            print(ev.__dict__)
+            if 'headline' in ev.__dict__:
+                headlines.append(ev.__dict__['headline'])
+            elif 'raw' in ev.__dict__ and 'headline' in ev.__dict__['raw']:
+                headlines.append(ev.__dict__['raw']['headline'])
+            else:
+                headlines.append(str(ev))
+        return headlines
 
    
 
@@ -85,3 +93,4 @@ strategy.backtest(
                  'cash_at_risk':.5},
     show_plot=True
 )
+
