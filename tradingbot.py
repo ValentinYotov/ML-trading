@@ -1,11 +1,11 @@
-from lumibot.brokers import Alpaca
+from lumibot.brokers.alpaca import Alpaca
 from lumibot.backtesting import YahooDataBacktesting
 from lumibot.strategies.strategy import Strategy
 from lumibot.traders import Trader
 from datetime import datetime
 import os
 from dotenv import load_dotenv
-
+from alpaca_trade_api import REST
 load_dotenv()
 
 API_KEY = os.getenv('API_KEY')
@@ -34,7 +34,7 @@ class MLTrader(Strategy):
         quantity = round(cash*self.cash_at_risk/last_price)
         return cash, last_price, quantity
 
-
+   
 
     def on_trading_iteration(self):
         cash, last_price, quantity = self.position_sizing()
