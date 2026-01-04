@@ -31,7 +31,7 @@ ALPACA_CREDS = {
 
 
 class MLTrader(Strategy):
-    def get_news(self):
+    def get_sentiment(self):
         today, three_days_prior = self.get_dates()
         news = self.api.get_news(symbol=self.symbol, start=three_days_prior, end=today)
         headlines = []
