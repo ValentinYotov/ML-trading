@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
 from alpaca_trade_api import REST
+from finbert_utils import estimate_sentiment
 load_dotenv()
 
 API_KEY = os.getenv('API_KEY')
