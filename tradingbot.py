@@ -70,7 +70,6 @@ class MLTrader(Strategy):
         news = self.api.get_news(symbol=self.symbol, start=three_days_prior, end=today)
         headlines = []
         for ev in news:
-            # Debug: виж структурата на обекта
             print(ev.__dict__)
             if 'headline' in ev.__dict__:
                 headlines.append(ev.__dict__['headline'])
@@ -78,27 +77,31 @@ class MLTrader(Strategy):
                 headlines.append(ev.__dict__['raw']['headline'])
             else:
                 headlines.append(str(ev))
-        return headlines
+        if headlines:
+            probability, sentiment = estimate_sentiment(headlines)
+        else:
+            probability, sentiment = 0.0, "neutral"
+        return probability, sentiment
 
    
 
     def on_trading_iteration(self):
         cash, last_price, quantity = self.position_sizing()
+        probability,sentiment = self.get_sentiment()
+         
 
         if cash > last_price:
-            if self.last_trade == None:
-                news = self.get_news()
-                print(news )
-                order = self.create_order(
-                    self.symbol,
-                    quantity,
-                    'buy',
-                    type = 'bracket',
-                    take_profit_price= last_price*1.2,
-                    stop_loss_price = last_price*.95
-                )
-                self.submit_order(order)
-                self.last_trade = 'buy'
+          
+            order = self.create_order(
+                self.symbol,
+                quantity,
+                'buy',
+                type = 'bracket',
+                take_profit_price= last_price*1.2,
+                stop_loss_price = last_price*.95
+            )
+            self.submit_order(order)
+            self.last_trade = 'buy'
 
 
 

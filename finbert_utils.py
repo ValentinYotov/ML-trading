@@ -9,14 +9,18 @@ labels = ["positive", "negative", "neutral"]
 
 def estimate_sentiment(news):
     if news:
-        tokens = tokenizer(news, return_tensors="pt", padding=True).to(device)
-
-        result = model(tokens["input_ids"], attention_mask=tokens["attention_mask"])[
-            "logits"
-        ]
-        result = torch.nn.functional.softmax(torch.sum(result, 0), dim=-1)
-        probability = result[torch.argmax(result)]
-        sentiment = labels[torch.argmax(result)]
+        # Accepts either a string or a list of strings
+        if isinstance(news, str):
+            texts = [news]
+        else:
+            texts = news
+        tokens = tokenizer(texts, return_tensors="pt", padding=True, truncation=True).to(device)
+        result = model(tokens["input_ids"], attention_mask=tokens["attention_mask"])["logits"]
+        result = torch.nn.functional.softmax(result, dim=-1)
+        # For batch, take mean probability and most common sentiment
+        avg_probs = result.mean(dim=0)
+        probability = avg_probs[torch.argmax(avg_probs)].item()
+        sentiment = labels[torch.argmax(avg_probs)]
         return probability, sentiment
     else:
         return 0, labels[-1]
